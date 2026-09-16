@@ -1,0 +1,41 @@
+version: 2
+
+project_name: apfsusage
+
+builds:
+  - id: apfsusage
+    main: ./cmd/apfsusage
+    binary: apfsusage
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
+
+archives:
+  - ids:
+      - apfsusage
+    formats:
+      - tar.gz
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+changelog:
+  use: git
+  sort: asc
+
+release:
+  github:
+    owner: benvon
+    name: macos-system-files-cleaner
+  prerelease: auto
