@@ -1,0 +1,7 @@
+/bin/
+/dist/
+/apfsusage
+*.out
+.DS_Store
+/report.json
+/reports/
