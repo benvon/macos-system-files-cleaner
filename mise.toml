@@ -4,6 +4,7 @@ actionlint = "1.7.12"
 gitleaks = "8.30.1"
 goreleaser = "2.18.1"
 shellcheck = "0.11.0"
+"npm:prettier" = "3.6.2"
 "go:golang.org/x/vuln/cmd/govulncheck" = "1.6.0"
 
 [tasks.ci]

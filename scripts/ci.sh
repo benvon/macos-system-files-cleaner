@@ -9,6 +9,7 @@ fi
 
 shellcheck scripts/*.sh
 actionlint
+prettier --check --prose-wrap never '**/*.md'
 goreleaser check
 go vet -buildvcs=false ./...
 go test -buildvcs=false -race ./...

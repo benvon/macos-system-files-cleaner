@@ -18,17 +18,9 @@ The proof of concept implements a preliminary baseline across these layers: capa
 
 ## Prototype validation
 
-The bulk scanner has been exercised against an APFS Data volume containing
-millions of entries. It completed substantially faster than `/usr/bin/du -sk`
-in an initial warm-cache comparison while retaining coverage and permission
-errors. Those measurements were exploratory rather than a controlled benchmark,
-so this repository intentionally does not publish machine-specific performance
-or application-usage details as general claims.
+The bulk scanner has been exercised against an APFS Data volume containing millions of entries. It completed substantially faster than `/usr/bin/du -sk` in an initial warm-cache comparison while retaining coverage and permission errors. Those measurements were exploratory rather than a controlled benchmark, so this repository intentionally does not publish machine-specific performance or application-usage details as general claims.
 
-A reproducible benchmark should report hardware, macOS version, filesystem,
-cache state, dataset characteristics, entry count, inaccessible paths, and
-multiple runs. Spotlight must remain optional: it may be disabled, stale,
-privacy-filtered, or unavailable for system locations.
+A reproducible benchmark should report hardware, macOS version, filesystem, cache state, dataset characteristics, entry count, inaccessible paths, and multiple runs. Spotlight must remain optional: it may be disabled, stale, privacy-filtered, or unavailable for system locations.
 
 ## What System Data means
 
@@ -65,11 +57,7 @@ Use only as a compatibility fallback when a mounted filesystem rejects bulk attr
 
 Spotlight can return indexed results quickly and supports size metadata. It is useful for an immediate “where should I look first?” mode or for incremental monitoring after a baseline scan.
 
-It is not suitable as the source of truth. Apple documents that system directories and some volumes are not indexed and that users can exclude directories and document types. Indexing can also be disabled, stale, or privacy-filtered. On the test machine, `mdutil -s /` reported that the Spotlight server was disabled, demonstrating why the tool needs a non-Spotlight path.
-It is not suitable as the source of truth. Apple documents that system
-directories and some volumes are not indexed and that users can exclude
-directories and document types. Indexing can also be disabled, stale, or
-privacy-filtered, so the tool always needs a non-Spotlight path.
+It is not suitable as the source of truth. Apple documents that system directories and some volumes are not indexed and that users can exclude directories and document types. Indexing can also be disabled, stale, or privacy-filtered, so the tool always needs a non-Spotlight path.
 
 ### APFS fast directory sizing
 
@@ -89,21 +77,14 @@ Advantages:
 
 Costs and limitations:
 
-- Go's standard library and `x/sys/unix` expose the Darwin types but not a
-  high-level wrapper, so the prototype calls the public libSystem function
-  through a small cgo boundary and uses a bounds-checked record decoder;
-- builds made without cgo use a slower descriptor-relative fallback instead of
-  issuing a raw syscall;
+- Go's standard library and `x/sys/unix` expose the Darwin types but not a high-level wrapper, so the prototype calls the public libSystem function through a small cgo boundary and uses a bounds-checked record decoder;
+- builds made without cgo use a slower descriptor-relative fallback instead of issuing a raw syscall;
 - filesystems such as SMB/NFS may reject the operation and need a slower fallback;
 - permission/TCC failures still apply;
 - allocated size is not unique physical size for APFS clones;
 - the call inventories the live namespace, not snapshot-only blocks.
 
-The scanner requests `ATTR_CMNEXT_PRIVATESIZE` to estimate blocks that would be
-freed immediately by deleting an individual file. It reports measurement
-coverage and excludes multiply linked files from that estimate. This is not a
-complete directory reclaim estimate: blocks shared only among several selected
-clones may become reclaimable only when the last clone is removed.
+The scanner requests `ATTR_CMNEXT_PRIVATESIZE` to estimate blocks that would be freed immediately by deleting an individual file. It reports measurement coverage and excludes multiply linked files from that estimate. This is not a complete directory reclaim estimate: blocks shared only among several selected clones may become reclaimable only when the last clone is removed.
 
 ## Open-source component assessment
 
